@@ -10,10 +10,24 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
   List<TodoItem> items = [];
 
-  void _incrementCounter(TodoItem? item) {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this); // Specify the number of tabs
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  void _addNewItem(TodoItem? item) {
     setState(() {
       items.add(item!);
     });
@@ -33,14 +47,22 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         centerTitle: true,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: getItems()
-          ),
+      body: TabBarView(
+        controller: _tabController,
+        children: const [
+          Center(child: Text('Tab 1 Content')),
+          Center(child: Text('Tab 2 Content')),
+        ],
+      ),
+      bottomNavigationBar: TabBar(
+        controller: _tabController,
+        tabs: const [
+          Tab(icon: Icon(Icons.list)),
+          Tab(icon: Icon(Icons.settings)),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _incrementCounter(null),
+        onPressed: () => _addNewItem(null),
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
