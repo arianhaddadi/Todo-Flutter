@@ -11,14 +11,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
-  List<TodoItem> items = [];
+  final List<TodoItem> items = [TodoItem(title: "Learn Flutter", notes: "Do it soon!", tags: ["Job", "Code"],)];
 
   late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this); // Specify the number of tabs
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -34,11 +34,6 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   }
 
 
-  List<Widget> getItems() {
-    return items.map((e) => Text(e.title)).toList();
-  }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,9 +44,9 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
       ),
       body: TabBarView(
         controller: _tabController,
-        children: const [
-          Center(child: Text('Tab 1 Content')),
-          Center(child: Text('Tab 2 Content')),
+        children: [
+          Column(children: items),
+          const Center(child: Text('Settings')),
         ],
       ),
       bottomNavigationBar: TabBar(
