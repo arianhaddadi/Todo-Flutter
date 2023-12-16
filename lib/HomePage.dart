@@ -1,5 +1,8 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:todo/TodoItem.dart';
+import 'package:path_provider/path_provider.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -10,8 +13,11 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
-  final List<TodoItem> items = [TodoItem(title: "Learn Flutter", notes: "Do it soon!", tags: ["Job", "Code"],)];
+class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+  final List<TodoItem> items = [
+    TodoItem(id: 1, title: "Learn Flutter", notes: "Do it soon!", tags: const ["Job", "Code"]),
+    TodoItem(id: 2, title: "Learn iOS", notes: "Do it Later!", tags: const ["Mac", "XCode"]),
+  ];
 
   late TabController _tabController;
 
@@ -19,11 +25,13 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -31,6 +39,17 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     setState(() {
       items.add(item!);
     });
+  }
+
+  Future<void> _saveData() async {
+    final directory = await getExternalStorageDirectory();
+    print(directory?.path);
+    final file = File('${directory?.path}/items.txt');
+    IOSink sink = file.openWrite(mode: FileMode.write);
+    for (var item in items) {
+      sink.write('${jsonEncode(item.toMap())}\n');
+    }
+    sink.close();
   }
 
 
