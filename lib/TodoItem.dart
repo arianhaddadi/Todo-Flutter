@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo/TodoItemField.dart';
 
 class TodoItem extends StatefulWidget {
   late final int id;
@@ -61,42 +62,38 @@ class _TodoItemState extends State<TodoItem> {
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: () {},
+                onTap: () {},
                 child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TodoItemField(
+                            text: title,
+                            padding: const EdgeInsets.all(20),
+                            style: const TextStyle(fontSize: 20)),
+                        TodoItemField(
+                            text: notes ?? "",
+                            padding: const EdgeInsets.only(left: 20),
+                            style: null),
+                        TodoItemField(
+                            text: tags.map((e) => '#$e').join(", "),
+                            padding: const EdgeInsets.only(
+                                left: 20, top: 10, bottom: 10))
+                      ],
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(20),
-                      child: Text(
-                        title,
-                        style: const TextStyle(fontSize: 20),
+                      child: GestureDetector(
+                        onTap: () {
+                          widget.removeItem(widget.id);
+                        },
+                        child: const Icon(Icons.delete),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: Text(notes ?? ""),
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 20, top: 10, bottom: 10),
-                      child: Text(tags.map((e) => '#$e').join(", ")),
-                    ),
+                    )
                   ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: GestureDetector(
-                    onTap: () {
-                      widget.removeItem(widget.id);
-                    },
-                    child: const Icon(Icons.delete),
-                  ),
-                )
-              ],
-            )),
+                )),
           ),
         ),
       ),
