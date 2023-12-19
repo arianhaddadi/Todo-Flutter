@@ -1,14 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:todo/TodoItem.dart';
+import 'package:todo/todo_item.dart';
 import 'package:path_provider/path_provider.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({
-    super.key,
-    required this.title
-  });
+  const MyHomePage({super.key, required this.title});
 
   final String title;
 
@@ -16,8 +13,10 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   final List<TodoItem> items = [];
+  int newItemId = 0;
   late TabController _tabController;
 
   @override
@@ -35,9 +34,17 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     super.dispose();
   }
 
-  void _addNewItem(TodoItem? item) {
+  void _addNewItem() {
+    TodoItem newItem = TodoItem(
+      key: UniqueKey(),
+      title: "New Task",
+      id: newItemId,
+      removeItem: _removeItem,
+      saveData: _saveData,
+    );
     setState(() {
-      items.add(item!);
+      items.add(newItem);
+      newItemId++;
     });
   }
 
@@ -46,7 +53,6 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
       for (int i = 0; i < items.length; i++) {
         if (items[i].id == id) {
           items.removeAt(i);
-          print(items[0].title);
           break;
         }
       }
@@ -56,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
 
   Future<void> _saveData() async {
     var directory = await getExternalStorageDirectory();
-    final file = File('${directory?.path}/items2.txt');
+    final file = File('${directory?.path}/items.txt');
     IOSink sink = file.openWrite(mode: FileMode.write);
     for (var item in items) {
       sink.write('${jsonEncode(item.toMap())}\n');
@@ -70,14 +76,15 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     final List<TodoItem> fileItems = [];
     if (file.existsSync()) {
       for (var line in file.readAsLinesSync()) {
-        fileItems.add(TodoItem.fromJsonObject(jsonDecode(line), removeItem: _removeItem, key: UniqueKey(),));
+        fileItems.add(TodoItem.fromJsonObject(jsonDecode(line),
+            removeItem: _removeItem, key: UniqueKey(), saveData: _saveData, id: newItemId));
+        newItemId++;
       }
     }
     setState(() {
       items.addAll(fileItems);
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +97,9 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
       body: TabBarView(
         controller: _tabController,
         children: [
-          items.isEmpty ? const Center(child: Text('Your Tasks')) : Column(children: items),
+          items.isEmpty
+              ? const Center(child: Text('Your Tasks'))
+              : SingleChildScrollView(child: Column(children: items)),
           const Center(child: Text('Settings')),
         ],
       ),
@@ -102,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _addNewItem(null),
+        onPressed: () => _addNewItem(),
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),

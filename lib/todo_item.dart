@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:todo/TodoItemField.dart';
+import 'package:todo/todo_item_field.dart';
 
-class TodoItem extends StatefulWidget {
+class TodoItem extends StatelessWidget {
   late final int id;
-  late String title;
-  late String? notes;
+  late final String title;
+  late final String? notes;
   late final List<String>? tags;
   final Function removeItem;
+  final Function saveData;
+  final GlobalKey<TodoItemFieldState> titleGlobalKey =
+      GlobalKey<TodoItemFieldState>();
+  final GlobalKey<TodoItemFieldState> notesGlobalKey =
+      GlobalKey<TodoItemFieldState>();
+  final GlobalKey<TodoItemFieldState> tagsGlobalKey =
+      GlobalKey<TodoItemFieldState>();
 
   TodoItem(
       {super.key,
@@ -14,10 +21,11 @@ class TodoItem extends StatefulWidget {
       this.notes,
       required this.id,
       this.tags,
-      required this.removeItem});
+      required this.removeItem,
+      required this.saveData});
 
-  TodoItem.fromJsonObject(var object, {super.key, required this.removeItem}) {
-    id = object['id'];
+  TodoItem.fromJsonObject(var object,
+      {super.key, required this.removeItem, required this.saveData, required this.id}) {
     title = object['title'];
     notes = object['notes'] ?? "";
     tags = [];
@@ -27,24 +35,11 @@ class TodoItem extends StatefulWidget {
   }
 
   Map<String, dynamic> toMap() {
-    return {"id": id, "title": title, "notes": notes, "tags": tags};
-  }
-
-  @override
-  State<TodoItem> createState() => _TodoItemState();
-}
-
-class _TodoItemState extends State<TodoItem> {
-  final List<String> tags = [];
-  late final String title;
-  late final String? notes;
-
-  @override
-  void initState() {
-    super.initState();
-    title = widget.title;
-    notes = widget.notes;
-    tags.addAll(widget.tags ?? []);
+    return {
+      "title": titleGlobalKey.currentState?.text,
+      "notes": notesGlobalKey.currentState?.text,
+      "tags": tagsGlobalKey.currentState?.tags
+    };
   }
 
   @override
@@ -62,7 +57,9 @@ class _TodoItemState extends State<TodoItem> {
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  titleGlobalKey.currentState?.startEditing();
+                },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -70,24 +67,30 @@ class _TodoItemState extends State<TodoItem> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         TodoItemField(
+                            key: titleGlobalKey,
                             text: title,
                             padding: const EdgeInsets.all(20),
-                            style: const TextStyle(fontSize: 20)),
+                            style: const TextStyle(fontSize: 20),
+                            saveData: saveData),
                         TodoItemField(
+                            key: notesGlobalKey,
                             text: notes ?? "",
                             padding: const EdgeInsets.only(left: 20),
-                            style: null),
+                            saveData: saveData),
                         TodoItemField(
-                            text: tags.map((e) => '#$e').join(", "),
-                            padding: const EdgeInsets.only(
-                                left: 20, top: 10, bottom: 10))
+                          key: tagsGlobalKey,
+                          text: tags?.map((e) => '#$e').join(", ") ?? "",
+                          padding: const EdgeInsets.only(
+                              left: 20, top: 10, bottom: 10),
+                          saveData: saveData,
+                        )
                       ],
                     ),
                     Padding(
                       padding: const EdgeInsets.all(20),
                       child: GestureDetector(
                         onTap: () {
-                          widget.removeItem(widget.id);
+                          removeItem(id);
                         },
                         child: const Icon(Icons.delete),
                       ),

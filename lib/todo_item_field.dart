@@ -1,24 +1,23 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TodoItemField extends StatefulWidget {
   final String text;
   final EdgeInsets padding;
   final TextStyle? style;
+  final Function saveData;
 
-  TodoItemField(
-      {super.key, required this.text, required this.padding, this.style});
+  const TodoItemField(
+      {super.key, required this.text, required this.padding, this.style, required this.saveData});
 
   @override
-  State<StatefulWidget> createState() => _TodoItemFieldState();
+  State<StatefulWidget> createState() => TodoItemFieldState();
 }
 
-class _TodoItemFieldState extends State<TodoItemField> {
+class TodoItemFieldState extends State<TodoItemField> {
   final List<String> tags = [];
   late String text = widget.text;
   TextEditingController controller = TextEditingController();
   var isEditing = false;
-  var width = 200;
 
   @override
   void initState() {
@@ -28,8 +27,9 @@ class _TodoItemFieldState extends State<TodoItemField> {
   void finishEditing(String newText) {
     setState(() {
       isEditing = false;
-      text = newText;
+      text = newText.isEmpty ? "New Task" : newText;
     });
+    widget.saveData();
   }
 
   void startEditing() {
@@ -41,11 +41,6 @@ class _TodoItemFieldState extends State<TodoItemField> {
       );
     });
   }
-
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  // }
 
   @override
   Widget build(BuildContext context) {
