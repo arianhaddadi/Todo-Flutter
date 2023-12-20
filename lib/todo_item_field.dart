@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class TodoItemField extends StatefulWidget {
   final String text;
   final EdgeInsets padding;
-  final TextStyle? style;
   final Function saveData;
+  final TextStyle? style;
 
   const TodoItemField(
       {super.key, required this.text, required this.padding, this.style, required this.saveData});
@@ -14,15 +14,9 @@ class TodoItemField extends StatefulWidget {
 }
 
 class TodoItemFieldState extends State<TodoItemField> {
-  final List<String> tags = [];
   late String text = widget.text;
   TextEditingController controller = TextEditingController();
   var isEditing = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   void finishEditing(String newText) {
     setState(() {
@@ -75,6 +69,7 @@ class TodoItemFieldState extends State<TodoItemField> {
                   text,
                   style: widget.style,
                 ),
-        ));
+        )
+    );
   }
 }

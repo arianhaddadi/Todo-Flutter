@@ -25,7 +25,10 @@ class TodoItem extends StatelessWidget {
       required this.saveData});
 
   TodoItem.fromJsonObject(var object,
-      {super.key, required this.removeItem, required this.saveData, required this.id}) {
+      {super.key,
+      required this.removeItem,
+      required this.saveData,
+      required this.id}) {
     title = object['title'];
     notes = object['notes'] ?? "";
     tags = [];
@@ -34,12 +37,42 @@ class TodoItem extends StatelessWidget {
     }
   }
 
+  List<String> _convertTagsStringToList(String tagsString) {
+    if (tagsString == "") return [];
+    return tagsString.split(",").map((e) => e.trim().substring(1)).toList();
+  }
+
   Map<String, dynamic> toMap() {
     return {
       "title": titleGlobalKey.currentState?.text,
       "notes": notesGlobalKey.currentState?.text,
-      "tags": tagsGlobalKey.currentState?.tags
+      "tags": _convertTagsStringToList(tagsGlobalKey.currentState?.text ?? "")
     };
+  }
+
+  Widget _renderItemFields() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TodoItemField(
+            key: titleGlobalKey,
+            text: title,
+            padding: const EdgeInsets.all(20),
+            style: const TextStyle(fontSize: 20),
+            saveData: saveData),
+        TodoItemField(
+            key: notesGlobalKey,
+            text: notes ?? "",
+            padding: const EdgeInsets.only(left: 20),
+            saveData: saveData),
+        TodoItemField(
+          key: tagsGlobalKey,
+          text: tags?.map((e) => '#$e').join(", ") ?? "",
+          padding: const EdgeInsets.only(left: 20, top: 10, bottom: 10),
+          saveData: saveData,
+        )
+      ],
+    );
   }
 
   @override
@@ -63,29 +96,7 @@ class TodoItem extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TodoItemField(
-                            key: titleGlobalKey,
-                            text: title,
-                            padding: const EdgeInsets.all(20),
-                            style: const TextStyle(fontSize: 20),
-                            saveData: saveData),
-                        TodoItemField(
-                            key: notesGlobalKey,
-                            text: notes ?? "",
-                            padding: const EdgeInsets.only(left: 20),
-                            saveData: saveData),
-                        TodoItemField(
-                          key: tagsGlobalKey,
-                          text: tags?.map((e) => '#$e').join(", ") ?? "",
-                          padding: const EdgeInsets.only(
-                              left: 20, top: 10, bottom: 10),
-                          saveData: saveData,
-                        )
-                      ],
-                    ),
+                    _renderItemFields(),
                     Padding(
                       padding: const EdgeInsets.all(20),
                       child: GestureDetector(
