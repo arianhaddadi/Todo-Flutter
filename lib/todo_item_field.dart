@@ -26,7 +26,7 @@ class TodoItemField extends StatefulWidget {
 }
 
 class TodoItemFieldState extends State<TodoItemField> {
-  String text = "";
+  String _text = "";
   var _isEditing = false;
   TextEditingController controller = TextEditingController();
 
@@ -34,15 +34,17 @@ class TodoItemFieldState extends State<TodoItemField> {
   void initState() {
     super.initState();
     _isEditing = widget.beginWithEditingState;
-    text = widget.text;
+    _text = widget.text;
   }
+
+  String get text => _text;
 
   void finishEditing() {
     if (!_isEditing) return;
     final newText = controller.text;
     setState(() {
       _isEditing = false;
-      text = newText.isEmpty
+      _text = newText.isEmpty
           ? (widget.isRequired ? widget.defaultText : "")
           : newText;
     });
@@ -53,7 +55,7 @@ class TodoItemFieldState extends State<TodoItemField> {
     if (_isEditing) return;
     setState(() {
       _isEditing = true;
-      controller.text = text;
+      controller.text = _text;
       controller.selection = TextSelection.fromPosition(
         TextPosition(offset: controller.text.length),
       );
@@ -81,7 +83,7 @@ class TodoItemFieldState extends State<TodoItemField> {
                   ),
                 )
               : Text(
-                  text,
+                  _text,
                   style: widget.style,
                 ),
         ));
