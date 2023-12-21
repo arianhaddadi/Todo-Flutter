@@ -14,7 +14,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage>
-    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+    with SingleTickerProviderStateMixin {
   final List<TodoItem> items = [];
   int newItemId = 0;
   late TabController _tabController;
@@ -23,14 +23,12 @@ class _MyHomePageState extends State<MyHomePage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    WidgetsBinding.instance.addObserver(this);
     _readData();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
-    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -39,6 +37,7 @@ class _MyHomePageState extends State<MyHomePage>
       key: UniqueKey(),
       title: "New Task",
       id: newItemId,
+      beginWithEditingState: true,
       removeItem: _removeItem,
       saveData: _saveData,
     );
@@ -77,7 +76,10 @@ class _MyHomePageState extends State<MyHomePage>
     if (file.existsSync()) {
       for (var line in file.readAsLinesSync()) {
         fileItems.add(TodoItem.fromJsonObject(jsonDecode(line),
-            removeItem: _removeItem, key: UniqueKey(), saveData: _saveData, id: newItemId));
+            removeItem: _removeItem,
+            key: UniqueKey(),
+            saveData: _saveData,
+            id: newItemId));
         newItemId++;
       }
     }
