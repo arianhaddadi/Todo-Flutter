@@ -6,10 +6,8 @@ void main() {
   runApp(const MyApp());
 }
 
-
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
-
 
   @override
   State<StatefulWidget> createState() => _MyAppState();
@@ -18,13 +16,14 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   Color themeSeedColor = Colors.indigo;
 
-  void _setThemeSeedColor({required int red, required int green, required int blue}) {
+  void _setThemeSeedColor(
+      {required int red, required int green, required int blue}) {
     setState(() {
       themeSeedColor = Color.fromRGBO(red, green, blue, 1);
       _storeSettings(red, green, blue);
     });
   }
-  
+
   void _storeSettings(int red, int green, int blue) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt("red", red);
@@ -57,8 +56,4 @@ class _MyAppState extends State<MyApp> {
       home: MyHomePage(title: 'Tasks', changeTheme: _setThemeSeedColor),
     );
   }
-
 }
-
-
-

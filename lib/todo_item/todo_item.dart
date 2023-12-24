@@ -146,27 +146,28 @@ class _TodoItemState extends State<TodoItem> {
 
   @override
   Widget build(BuildContext context) {
-    return FractionallySizedBox(
-      widthFactor: 0.9,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.inversePrimary,
-          borderRadius: BorderRadius.circular(15),
-        ),
-        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(15),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-                onTap: () {
-                  _startEditing();
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [_renderItemFields(), _renderActionButton()],
-                )),
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.inversePrimary,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      margin: EdgeInsets.only(
+        top: MediaQuery.of(context).size.height * 0.02,
+        left: MediaQuery.of(context).size.width * 0.05,
+        right: MediaQuery.of(context).size.width * 0.05,
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+              onTap: () {
+                _startEditing();
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [_renderItemFields(), _renderActionButton()],
+              )),
         ),
       ),
     );
