@@ -102,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage>
         controller: _tabController,
         children: [
           items.isEmpty
-              ? const Center(child: Text('Your Tasks'))
+              ? const Center(child: Text('You currently have now tasks.'))
               : SingleChildScrollView(child: Column(children: items)),
           RGBColorSelector(changeTheme: widget.changeTheme),
         ],
