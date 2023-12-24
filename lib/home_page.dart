@@ -68,7 +68,8 @@ class _MyHomePageState extends State<MyHomePage>
     for (var item in items) {
       sink.write('${jsonEncode(item.toMap())}\n');
     }
-    sink.close();
+    await sink.close();
+    _readData();
   }
 
   Future<void> _readData() async {
@@ -85,9 +86,19 @@ class _MyHomePageState extends State<MyHomePage>
         newItemId++;
       }
     }
+
     setState(() {
+      items.clear();
       items.addAll(fileItems);
     });
+  }
+
+  Widget _renderItems() {
+    if (items.isEmpty) {
+      return const Center(child: Text('You have no tasks.'));
+    } else {
+      return SingleChildScrollView(child: Column(children: items));
+    }
   }
 
   @override
@@ -101,9 +112,7 @@ class _MyHomePageState extends State<MyHomePage>
       body: TabBarView(
         controller: _tabController,
         children: [
-          items.isEmpty
-              ? const Center(child: Text('You currently have now tasks.'))
-              : SingleChildScrollView(child: Column(children: items)),
+          _renderItems(),
           RGBColorSelector(changeTheme: widget.changeTheme),
         ],
       ),
