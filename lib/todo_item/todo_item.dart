@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo/todo_item_field.dart';
+import 'package:todo/todo_item/todo_item_field.dart';
 
 class TodoItem extends StatefulWidget {
   late final int id;
@@ -54,10 +54,10 @@ class TodoItem extends StatefulWidget {
   }
 
   @override
-  State<StatefulWidget> createState() => TodoItemState();
+  State<StatefulWidget> createState() => _TodoItemState();
 }
 
-class TodoItemState extends State<TodoItem> {
+class _TodoItemState extends State<TodoItem> {
   var _isEditing = false;
 
   @override
@@ -152,7 +152,7 @@ class TodoItemState extends State<TodoItem> {
       widthFactor: 0.9,
       child: Container(
         decoration: BoxDecoration(
-          color: const Color.fromRGBO(160, 204, 252, 0.6),
+          color: Theme.of(context).colorScheme.inversePrimary,
           borderRadius: BorderRadius.circular(15),
         ),
         margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),

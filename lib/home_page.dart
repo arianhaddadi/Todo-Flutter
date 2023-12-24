@@ -1,13 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:todo/todo_item.dart';
+import 'package:todo/settings/rgb_selector.dart';
+import 'package:todo/todo_item/todo_item.dart';
 import 'package:path_provider/path_provider.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key, required this.title, required this.changeTheme});
 
   final String title;
+  final Function changeTheme;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -102,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage>
           items.isEmpty
               ? const Center(child: Text('Your Tasks'))
               : SingleChildScrollView(child: Column(children: items)),
-          const Center(child: Text('Settings')),
+          RGBColorSelector(changeTheme: widget.changeTheme),
         ],
       ),
       bottomNavigationBar: TabBar(
@@ -114,7 +116,6 @@ class _MyHomePageState extends State<MyHomePage>
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _addNewItem(),
-        tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
     );
