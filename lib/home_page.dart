@@ -115,7 +115,10 @@ class _MyHomePageState extends State<MyHomePage>
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _addNewItem(),
+        onPressed: () {
+          _tabController.animateTo(0);
+          _addNewItem();
+        },
         child: const Icon(Icons.add),
       ),
     );
