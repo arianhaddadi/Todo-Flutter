@@ -82,6 +82,7 @@ class _TodoItemState extends State<TodoItem> {
       widget._titleGlobalKey.currentState?.finishEditing();
       widget._notesGlobalKey.currentState?.finishEditing();
       widget._tagsGlobalKey.currentState?.finishEditing();
+      widget.saveData();
     });
   }
 
@@ -97,7 +98,6 @@ class _TodoItemState extends State<TodoItem> {
           beginWithEditingState: widget.beginWithEditingState,
           padding: const EdgeInsets.all(20),
           style: const TextStyle(fontSize: 20),
-          saveData: widget.saveData,
           parentFinishEditing: _finishEditing,
         ),
         TodoItemField(
@@ -106,7 +106,6 @@ class _TodoItemState extends State<TodoItem> {
           defaultText: "notes",
           beginWithEditingState: widget.beginWithEditingState,
           padding: const EdgeInsets.only(left: 20),
-          saveData: widget.saveData,
           parentFinishEditing: _finishEditing,
         ),
         TodoItemField(
@@ -115,7 +114,6 @@ class _TodoItemState extends State<TodoItem> {
           defaultText: "Tags",
           beginWithEditingState: widget.beginWithEditingState,
           padding: const EdgeInsets.only(left: 20, top: 10, bottom: 10),
-          saveData: widget.saveData,
           parentFinishEditing: _finishEditing,
         )
       ],

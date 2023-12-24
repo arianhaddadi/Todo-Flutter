@@ -4,7 +4,6 @@ class TodoItemField extends StatefulWidget {
   final String text;
   final String defaultText;
   final EdgeInsets padding;
-  final Function saveData;
   final Function parentFinishEditing;
   final bool isRequired;
   final bool beginWithEditingState;
@@ -18,7 +17,6 @@ class TodoItemField extends StatefulWidget {
       required this.defaultText,
       required this.text,
       required this.padding,
-      required this.saveData,
       required this.parentFinishEditing});
 
   @override
@@ -48,7 +46,6 @@ class TodoItemFieldState extends State<TodoItemField> {
           ? (widget.isRequired ? widget.defaultText : "")
           : newText;
     });
-    widget.saveData();
   }
 
   void startEditing() {
