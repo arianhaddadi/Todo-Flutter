@@ -70,6 +70,7 @@ class TodoItemFieldState extends State<TodoItemField> {
           child: _isEditing
               ? SizedBox(
                   width: 200,
+                  height: 30,
                   child: TextField(
                     controller: controller,
                     autofocus: true,

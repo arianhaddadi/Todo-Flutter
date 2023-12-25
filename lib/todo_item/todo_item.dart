@@ -59,6 +59,7 @@ class TodoItem extends StatefulWidget {
 
 class _TodoItemState extends State<TodoItem> {
   var _isEditing = false;
+  var _isDeleting = false;
 
   @override
   void initState() {
@@ -131,7 +132,12 @@ class _TodoItemState extends State<TodoItem> {
     } else {
       return GestureDetector(
         onTap: () {
-          widget.removeItem(widget.id);
+          setState(() {
+            _isDeleting = true;
+          });
+          Future.delayed(const Duration(seconds: 1), () {
+            widget.removeItem(widget.id);
+          });
         },
         child: const Icon(Icons.delete),
       );
@@ -146,30 +152,40 @@ class _TodoItemState extends State<TodoItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.inversePrimary,
-        borderRadius: BorderRadius.circular(15),
-      ),
-      margin: EdgeInsets.only(
-        top: MediaQuery.of(context).size.height * 0.02,
-        left: MediaQuery.of(context).size.width * 0.05,
-        right: MediaQuery.of(context).size.width * 0.05,
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(15),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-              onTap: () {
-                _startEditing();
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [_renderItemFields(), _renderActionButton()],
-              )),
-        ),
-      ),
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.2,
+      child: Stack(children: [
+        AnimatedPositioned(
+            right: _isDeleting ? -MediaQuery.of(context).size.height : 0,
+            left: _isDeleting ? MediaQuery.of(context).size.height : 0,
+            top: 0,
+            duration: const Duration(seconds: 2),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.inversePrimary,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              margin: EdgeInsets.only(
+                top: MediaQuery.of(context).size.height * 0.02,
+                left: MediaQuery.of(context).size.width * 0.05,
+                right: MediaQuery.of(context).size.width * 0.05,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                      onTap: () {
+                        _startEditing();
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [_renderItemFields(), _renderActionButton()],
+                      )),
+                ),
+              ),
+            ))
+      ]),
     );
   }
 }
