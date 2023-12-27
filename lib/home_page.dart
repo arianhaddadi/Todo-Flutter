@@ -62,8 +62,8 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   Future<void> _saveData() async {
-    var directory = await getExternalStorageDirectory();
-    final file = File('${directory?.path}/items.txt');
+    var directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/items.txt');
     IOSink sink = file.openWrite(mode: FileMode.write);
     for (var item in items) {
       sink.write('${jsonEncode(item.toMap())}\n');
@@ -73,8 +73,8 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   Future<void> _readData() async {
-    final directory = await getExternalStorageDirectory();
-    final file = File('${directory?.path}/items.txt');
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/items.txt');
     final List<TodoItem> fileItems = [];
     if (file.existsSync()) {
       for (var line in file.readAsLinesSync()) {

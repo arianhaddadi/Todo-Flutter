@@ -42,7 +42,13 @@ class TodoItem extends StatefulWidget {
 
   List<String> _convertTagsStringToList(String tagsString) {
     if (tagsString.isEmpty) return [];
-    return tagsString.split(",").map((e) => e.trim().substring(1)).toList();
+    return tagsString.split(",").map((e) {
+      e = e.trim();
+      int hashtagIndex = e.indexOf("#");
+      int startIndex = hashtagIndex == -1 ? 0 : hashtagIndex + 1;
+      return e.substring(startIndex).trim();
+    } 
+    ).toList();
   }
 
   Map<String, dynamic> toMap() {
