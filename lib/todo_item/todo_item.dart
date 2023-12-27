@@ -152,23 +152,25 @@ class _TodoItemState extends State<TodoItem> {
 
   @override
   Widget build(BuildContext context) {
+    Orientation orientation = MediaQuery.of(context).orientation;
+    Size screenSize = MediaQuery.of(context).size;
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.2,
+      height: orientation == Orientation.portrait ? screenSize.height * 0.2 : screenSize.width * 0.2,
       child: Stack(children: [
         AnimatedPositioned(
-            right: _isDeleting ? -MediaQuery.of(context).size.height : 0,
-            left: _isDeleting ? MediaQuery.of(context).size.height : 0,
+            right: _isDeleting ? orientation == Orientation.portrait ? -screenSize.height : -screenSize.width : 0,
+            left: _isDeleting ? orientation == Orientation.portrait ? screenSize.height : screenSize.width : 0,
             top: 0,
-            duration: const Duration(seconds: 2),
+            duration: const Duration(seconds: 1),
             child: Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.inversePrimary,
                 borderRadius: BorderRadius.circular(15),
               ),
               margin: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height * 0.02,
-                left: MediaQuery.of(context).size.width * 0.05,
-                right: MediaQuery.of(context).size.width * 0.05,
+                top: screenSize.height * 0.02,
+                left: screenSize.width * 0.05,
+                right: screenSize.width * 0.05,
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
