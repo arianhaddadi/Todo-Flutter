@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -40,8 +41,9 @@ class _RGBColorSelectorState extends State<RGBColorSelector> {
             Text('Red: ${redValue.round()}'),
             RotatedBox(
               quarterTurns: 3,
-              child: Slider(
+              child: CupertinoSlider(
                 value: redValue,
+                thumbColor: Theme.of(context).colorScheme.primary,
                 onChanged: (value) {
                   setState(() {
                     redValue = value;
@@ -63,8 +65,9 @@ class _RGBColorSelectorState extends State<RGBColorSelector> {
             Text('Green: ${greenValue.round()}'),
             RotatedBox(
                 quarterTurns: 3,
-                child: Slider(
+                child: CupertinoSlider(
                   value: greenValue,
+                  thumbColor: Theme.of(context).colorScheme.primary,
                   onChanged: (value) {
                     setState(() {
                       greenValue = value;
@@ -85,8 +88,9 @@ class _RGBColorSelectorState extends State<RGBColorSelector> {
             Text('Blue: ${blueValue.round()}'),
             RotatedBox(
                 quarterTurns: 3,
-                child: Slider(
+                child: CupertinoSlider(
                   value: blueValue,
+                  thumbColor: Theme.of(context).colorScheme.primary,
                   onChanged: (value) {
                     setState(() {
                       blueValue = value;
