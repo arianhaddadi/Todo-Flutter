@@ -1,64 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo/home_page.dart';
 import 'package:provider/provider.dart';
+import 'package:todo/settings/color_theme.dart';
 import 'package:todo/tasks/tasks_repo.dart';
 
 void main() {
   runApp(MultiProvider(
-    providers: [ChangeNotifierProvider(create: (_) => TasksRepo())],
+    providers: [
+      ChangeNotifierProvider(create: (_) => TasksRepo()),
+      ChangeNotifierProvider(create: (_) => ColorTheme())
+    ],
     child: const MyApp(),
   ));
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  State<StatefulWidget> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  Color themeSeedColor = Colors.indigo;
-
-  void _setThemeSeedColor(
-      {required int red, required int green, required int blue}) {
-    setState(() {
-      themeSeedColor = Color.fromRGBO(red, green, blue, 1);
-      _storeSettings(red, green, blue);
-    });
-  }
-
-  void _storeSettings(int red, int green, int blue) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setInt("red", red);
-    await prefs.setInt("green", green);
-    await prefs.setInt("blue", blue);
-  }
-
-  void _loadSettings() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final red = prefs.getInt("red") ?? themeSeedColor.red;
-    final green = prefs.getInt("green") ?? themeSeedColor.green;
-    final blue = prefs.getInt("blue") ?? themeSeedColor.blue;
-    _setThemeSeedColor(red: red, green: green, blue: blue);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _loadSettings();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    Color themeSeedColor = context.watch<ColorTheme>().colorTheme;
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: themeSeedColor),
         useMaterial3: true,
       ),
-      home: MyHomePage(changeTheme: _setThemeSeedColor),
+      home: const MyHomePage(),
     );
   }
 }

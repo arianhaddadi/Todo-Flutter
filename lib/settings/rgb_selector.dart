@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import 'package:todo/settings/color_theme.dart';
 
 class RGBColorSelector extends StatefulWidget {
-  const RGBColorSelector({super.key, required this.changeTheme});
-
-  final Function changeTheme;
+  const RGBColorSelector({super.key});
 
   @override
   State<StatefulWidget> createState() => _RGBColorSelectorState();
@@ -31,6 +31,13 @@ class _RGBColorSelectorState extends State<RGBColorSelector> {
     _loadSettings();
   }
 
+  void _changeAppTheme() {
+    context.read<ColorTheme>().setThemeSeedColor(
+        red: redValue.round(),
+        green: greenValue.round(),
+        blue: blueValue.round());
+  }
+
   Widget _renderSliders() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -47,10 +54,7 @@ class _RGBColorSelectorState extends State<RGBColorSelector> {
                 onChanged: (value) {
                   setState(() {
                     redValue = value;
-                    widget.changeTheme(
-                        red: redValue.round(),
-                        green: greenValue.round(),
-                        blue: blueValue.round());
+                    _changeAppTheme();
                   });
                 },
                 min: 0,
@@ -71,10 +75,7 @@ class _RGBColorSelectorState extends State<RGBColorSelector> {
                   onChanged: (value) {
                     setState(() {
                       greenValue = value;
-                      widget.changeTheme(
-                          red: redValue.round(),
-                          green: greenValue.round(),
-                          blue: blueValue.round());
+                      _changeAppTheme();
                     });
                   },
                   min: 0,
@@ -94,10 +95,7 @@ class _RGBColorSelectorState extends State<RGBColorSelector> {
                   onChanged: (value) {
                     setState(() {
                       blueValue = value;
-                      widget.changeTheme(
-                          red: redValue.round(),
-                          green: greenValue.round(),
-                          blue: blueValue.round());
+                      _changeAppTheme();
                     });
                   },
                   min: 0,

@@ -33,12 +33,16 @@ class Task extends StatefulWidget {
 
   List<String> _convertTagsStringToList(String tagsString) {
     if (tagsString.isEmpty) return [];
-    return tagsString.split(",").map((e) {
-      e = e.trim();
-      int hashtagIndex = e.indexOf("#");
-      int startIndex = hashtagIndex == -1 ? 0 : hashtagIndex + 1;
-      return e.substring(startIndex).trim();
-    }).where((e) => e.isNotEmpty).toList();
+    return tagsString
+        .split(",")
+        .map((e) {
+          e = e.trim();
+          int hashtagIndex = e.indexOf("#");
+          int startIndex = hashtagIndex == -1 ? 0 : hashtagIndex + 1;
+          return e.substring(startIndex).trim();
+        })
+        .where((e) => e.isNotEmpty)
+        .toList();
   }
 
   Map<String, dynamic> toMap() {
