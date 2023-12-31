@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo/home_page.dart';
+import 'package:provider/provider.dart';
+import 'package:todo/tasks/tasks_repo.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    providers: [ChangeNotifierProvider(create: (_) => TasksRepo())],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatefulWidget {

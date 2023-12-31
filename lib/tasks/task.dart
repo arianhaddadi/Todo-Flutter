@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo/tasks/task_info.dart';
+import 'package:provider/provider.dart';
+import 'package:todo/tasks/tasks_repo.dart';
 
 class Task extends StatefulWidget {
   late final int id;
@@ -7,8 +9,6 @@ class Task extends StatefulWidget {
   late final String? notes;
   late final List<String>? tags;
   final bool beginWithEditingState;
-  final Function removeItem;
-  final Function saveData;
   final GlobalKey<TaskInfoState> _titleGlobalKey = GlobalKey<TaskInfoState>();
   final GlobalKey<TaskInfoState> _notesGlobalKey = GlobalKey<TaskInfoState>();
   final GlobalKey<TaskInfoState> _tagsGlobalKey = GlobalKey<TaskInfoState>();
@@ -19,16 +19,10 @@ class Task extends StatefulWidget {
       this.tags,
       this.beginWithEditingState = false,
       required this.title,
-      required this.id,
-      required this.removeItem,
-      required this.saveData});
+      required this.id});
 
   Task.fromJsonObject(var object,
-      {super.key,
-      this.beginWithEditingState = false,
-      required this.removeItem,
-      required this.saveData,
-      required this.id}) {
+      {super.key, this.beginWithEditingState = false, required this.id}) {
     title = object['title'];
     notes = object['notes'] ?? "";
     tags = [];
@@ -44,7 +38,7 @@ class Task extends StatefulWidget {
       int hashtagIndex = e.indexOf("#");
       int startIndex = hashtagIndex == -1 ? 0 : hashtagIndex + 1;
       return e.substring(startIndex).trim();
-    }).toList();
+    }).where((e) => e.isNotEmpty).toList();
   }
 
   Map<String, dynamic> toMap() {
@@ -85,7 +79,7 @@ class _TaskState extends State<Task> {
       widget._titleGlobalKey.currentState?.finishEditing();
       widget._notesGlobalKey.currentState?.finishEditing();
       widget._tagsGlobalKey.currentState?.finishEditing();
-      widget.saveData();
+      context.read<TasksRepo>().saveData();
     });
   }
 
@@ -138,7 +132,7 @@ class _TaskState extends State<Task> {
             _isDeleting = true;
           });
           Future.delayed(const Duration(seconds: 1), () {
-            widget.removeItem(widget.id);
+            context.read<TasksRepo>().removeItem(widget.id);
           });
         },
         child: const Icon(Icons.delete),

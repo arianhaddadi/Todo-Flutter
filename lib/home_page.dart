@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:todo/settings/rgb_selector.dart';
 import 'package:todo/tasks/tasks_list.dart';
+import 'package:provider/provider.dart';
+import 'package:todo/tasks/tasks_repo.dart';
+
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({super.key, required this.changeTheme});
+  const MyHomePage({super.key, required this.changeTheme});
 
   final Function changeTheme;
-  final GlobalKey<TasksListState> _tasksGlobalKey = GlobalKey<TasksListState>();
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -39,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage>
       body: TabBarView(
         controller: _tabController,
         children: [
-          TasksList(key: widget._tasksGlobalKey),
+          const TasksList(),
           RGBColorSelector(changeTheme: widget.changeTheme),
         ],
       ),
@@ -53,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage>
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _tabController.animateTo(0);
-          widget._tasksGlobalKey.currentState?.addNewItem();
+          context.read<TasksRepo>().addNewItem();
         },
         child: const Icon(Icons.add),
       ),
