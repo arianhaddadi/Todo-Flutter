@@ -1,15 +1,12 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:todo/settings/rgb_selector.dart';
-import 'package:todo/todo_item/todo_item.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:todo/tasks/tasks_list.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title, required this.changeTheme});
+  MyHomePage({super.key, required this.changeTheme});
 
-  final String title;
   final Function changeTheme;
+  final GlobalKey<TasksListState> _tasksGlobalKey = GlobalKey<TasksListState>();
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -17,15 +14,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
-  final List<TodoItem> items = [];
-  int newItemId = 0;
   late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _readData();
   }
 
   @override
@@ -34,85 +28,18 @@ class _MyHomePageState extends State<MyHomePage>
     super.dispose();
   }
 
-  void _addNewItem() {
-    TodoItem newItem = TodoItem(
-      key: UniqueKey(),
-      title: "New Task",
-      id: newItemId,
-      beginWithEditingState: true,
-      removeItem: _removeItem,
-      saveData: _saveData,
-    );
-    setState(() {
-      items.add(newItem);
-      newItemId++;
-    });
-  }
-
-  void _removeItem(int id) {
-    setState(() {
-      for (int i = 0; i < items.length; i++) {
-        if (items[i].id == id) {
-          items.removeAt(i);
-          break;
-        }
-      }
-      _saveData();
-    });
-  }
-
-  Future<void> _saveData() async {
-    var directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/items.txt');
-    IOSink sink = file.openWrite(mode: FileMode.write);
-    for (var item in items) {
-      sink.write('${jsonEncode(item.toMap())}\n');
-    }
-    await sink.close();
-    _readData();
-  }
-
-  Future<void> _readData() async {
-    final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/items.txt');
-    final List<TodoItem> fileItems = [];
-    if (file.existsSync()) {
-      for (var line in file.readAsLinesSync()) {
-        fileItems.add(TodoItem.fromJsonObject(jsonDecode(line),
-            removeItem: _removeItem,
-            key: UniqueKey(),
-            saveData: _saveData,
-            id: newItemId));
-        newItemId++;
-      }
-    }
-
-    setState(() {
-      items.clear();
-      items.addAll(fileItems);
-    });
-  }
-
-  Widget _renderItems() {
-    if (items.isEmpty) {
-      return const Center(child: Text('You have no tasks.'));
-    } else {
-      return SingleChildScrollView(child: Column(children: items));
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: const Text("Tasks"),
         centerTitle: true,
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
-          _renderItems(),
+          TasksList(key: widget._tasksGlobalKey),
           RGBColorSelector(changeTheme: widget.changeTheme),
         ],
       ),
@@ -126,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage>
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _tabController.animateTo(0);
-          _addNewItem();
+          widget._tasksGlobalKey.currentState?.addNewItem();
         },
         child: const Icon(Icons.add),
       ),

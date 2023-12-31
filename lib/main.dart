@@ -53,7 +53,7 @@ class _MyAppState extends State<MyApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: themeSeedColor),
         useMaterial3: true,
       ),
-      home: MyHomePage(title: 'Tasks', changeTheme: _setThemeSeedColor),
+      home: MyHomePage(changeTheme: _setThemeSeedColor),
     );
   }
 }

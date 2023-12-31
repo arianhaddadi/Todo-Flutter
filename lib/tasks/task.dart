@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:todo/todo_item/todo_item_field.dart';
+import 'package:todo/tasks/task_info.dart';
 
-class TodoItem extends StatefulWidget {
+class Task extends StatefulWidget {
   late final int id;
   late final String title;
   late final String? notes;
@@ -9,14 +9,11 @@ class TodoItem extends StatefulWidget {
   final bool beginWithEditingState;
   final Function removeItem;
   final Function saveData;
-  final GlobalKey<TodoItemFieldState> _titleGlobalKey =
-      GlobalKey<TodoItemFieldState>();
-  final GlobalKey<TodoItemFieldState> _notesGlobalKey =
-      GlobalKey<TodoItemFieldState>();
-  final GlobalKey<TodoItemFieldState> _tagsGlobalKey =
-      GlobalKey<TodoItemFieldState>();
+  final GlobalKey<TaskInfoState> _titleGlobalKey = GlobalKey<TaskInfoState>();
+  final GlobalKey<TaskInfoState> _notesGlobalKey = GlobalKey<TaskInfoState>();
+  final GlobalKey<TaskInfoState> _tagsGlobalKey = GlobalKey<TaskInfoState>();
 
-  TodoItem(
+  Task(
       {super.key,
       this.notes,
       this.tags,
@@ -26,7 +23,7 @@ class TodoItem extends StatefulWidget {
       required this.removeItem,
       required this.saveData});
 
-  TodoItem.fromJsonObject(var object,
+  Task.fromJsonObject(var object,
       {super.key,
       this.beginWithEditingState = false,
       required this.removeItem,
@@ -47,8 +44,7 @@ class TodoItem extends StatefulWidget {
       int hashtagIndex = e.indexOf("#");
       int startIndex = hashtagIndex == -1 ? 0 : hashtagIndex + 1;
       return e.substring(startIndex).trim();
-    } 
-    ).toList();
+    }).toList();
   }
 
   Map<String, dynamic> toMap() {
@@ -60,10 +56,10 @@ class TodoItem extends StatefulWidget {
   }
 
   @override
-  State<StatefulWidget> createState() => _TodoItemState();
+  State<StatefulWidget> createState() => _TaskState();
 }
 
-class _TodoItemState extends State<TodoItem> {
+class _TaskState extends State<Task> {
   var _isEditing = false;
   var _isDeleting = false;
 
@@ -97,7 +93,7 @@ class _TodoItemState extends State<TodoItem> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TodoItemField(
+        TaskInfo(
           key: widget._titleGlobalKey,
           text: widget.title,
           defaultText: "New Task",
@@ -107,7 +103,7 @@ class _TodoItemState extends State<TodoItem> {
           style: const TextStyle(fontSize: 20),
           parentFinishEditing: _finishEditing,
         ),
-        TodoItemField(
+        TaskInfo(
           key: widget._notesGlobalKey,
           text: widget.notes ?? "",
           defaultText: "notes",
@@ -115,7 +111,7 @@ class _TodoItemState extends State<TodoItem> {
           padding: const EdgeInsets.only(left: 20),
           parentFinishEditing: _finishEditing,
         ),
-        TodoItemField(
+        TaskInfo(
           key: widget._tagsGlobalKey,
           text: widget.tags?.map((e) => '#$e').join(", ") ?? "",
           defaultText: "Tags",
@@ -161,11 +157,21 @@ class _TodoItemState extends State<TodoItem> {
     Orientation orientation = MediaQuery.of(context).orientation;
     Size screenSize = MediaQuery.of(context).size;
     return SizedBox(
-      height: orientation == Orientation.portrait ? screenSize.height * 0.2 : screenSize.width * 0.2,
+      height: orientation == Orientation.portrait
+          ? screenSize.height * 0.2
+          : screenSize.width * 0.2,
       child: Stack(children: [
         AnimatedPositioned(
-            right: _isDeleting ? orientation == Orientation.portrait ? -screenSize.height : -screenSize.width : 0,
-            left: _isDeleting ? orientation == Orientation.portrait ? screenSize.height : screenSize.width : 0,
+            right: _isDeleting
+                ? orientation == Orientation.portrait
+                    ? -screenSize.height
+                    : -screenSize.width
+                : 0,
+            left: _isDeleting
+                ? orientation == Orientation.portrait
+                    ? screenSize.height
+                    : screenSize.width
+                : 0,
             top: 0,
             duration: const Duration(seconds: 1),
             child: Container(

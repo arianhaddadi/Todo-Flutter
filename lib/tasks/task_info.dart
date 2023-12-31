@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class TodoItemField extends StatefulWidget {
+class TaskInfo extends StatefulWidget {
   final String text;
   final String defaultText;
   final EdgeInsets padding;
@@ -9,7 +9,7 @@ class TodoItemField extends StatefulWidget {
   final bool beginWithEditingState;
   final TextStyle? style;
 
-  const TodoItemField(
+  const TaskInfo(
       {super.key,
       this.style,
       this.isRequired = false,
@@ -20,10 +20,10 @@ class TodoItemField extends StatefulWidget {
       required this.parentFinishEditing});
 
   @override
-  State<StatefulWidget> createState() => TodoItemFieldState();
+  State<StatefulWidget> createState() => TaskInfoState();
 }
 
-class TodoItemFieldState extends State<TodoItemField> {
+class TaskInfoState extends State<TaskInfo> {
   String _text = "";
   var _isEditing = false;
   TextEditingController controller = TextEditingController();
