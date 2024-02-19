@@ -58,8 +58,12 @@ class Task extends StatefulWidget {
 }
 
 class _TaskState extends State<Task> {
-  var _isEditing = false;
   var _isDeleting = false;
+  var _isEditing = false;
+
+  final configs = {
+    "animation_duration": 1
+  };
 
   @override
   void initState() {
@@ -135,7 +139,7 @@ class _TaskState extends State<Task> {
           setState(() {
             _isDeleting = true;
           });
-          Future.delayed(const Duration(seconds: 1), () {
+          Future.delayed(Duration(seconds: configs["animation_duration"] ?? 1), () {
             context.read<TasksRepo>().removeItem(widget.id);
           });
         },
@@ -160,18 +164,10 @@ class _TaskState extends State<Task> {
           : screenSize.width * 0.2,
       child: Stack(children: [
         AnimatedPositioned(
-            right: _isDeleting
-                ? orientation == Orientation.portrait
-                    ? -screenSize.height
-                    : -screenSize.width
-                : 0,
-            left: _isDeleting
-                ? orientation == Orientation.portrait
-                    ? screenSize.height
-                    : screenSize.width
-                : 0,
+            right: _isDeleting ? -screenSize.width : 0,
+            left: _isDeleting ? screenSize.width : 0,
             top: 0,
-            duration: const Duration(seconds: 1),
+            duration: Duration(seconds: configs["animation_duration"] ?? 1),
             child: Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.inversePrimary,
